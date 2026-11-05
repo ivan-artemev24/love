@@ -491,3 +491,30 @@ body {
   font-size: 0.9rem;
   border-top: 1px solid var(--border);
 }
+
+/* Мобильная адаптация галереи (всегда 3 в ряд) */
+@media (max-width: 768px) {
+  .gallery-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px; /* Уменьшенный отступ между карточками */
+  }
+
+  .gallery-card {
+    border-radius: 10px;
+    aspect-ratio: 1 / 1; /* Квадратные аккуратные иконки (можно убрать строку, если нужны прямоугольные 4:5) */
+  }
+
+  /* Уменьшаем подписи при наведении под маленький размер карточек */
+  .gallery-overlay {
+    padding: 0.4rem;
+  }
+
+  .gallery-date {
+    font-size: 0.6rem;
+  }
+
+  .gallery-title {
+    font-size: 0.75rem;
+    line-height: 1.15;
+  }
+}
