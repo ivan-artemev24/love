@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Наша История Любви</title>
+
+  <!-- Шрифты: Cormorant Infant и Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Infant:ital,wght@0,500;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+  <!-- Иконки Lucide -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Яндекс Карты JS API 2.1 (Вставьте свой ключ после apikey=) -->
+  <script src="https://api-maps.yandex.ru/2.1/?apikey=cbde8a0e-6ca1-4779-ba4e-056b88836a5e&lang=ru_RU"></script>
+
+  <!-- Основные стили -->
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+  <!-- Навигация -->
+  <nav class="nav">
+    <div class="nav-container">
+      <span class="logo"><i data-lucide="heart" class="icon-heart"></i> Our Story</span>
+      <div class="nav-links">
+        <a href="#map-section">Карта воспоминаний</a>
+        <a href="#gallery-section">Галерея</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero & Таймер отношений -->
+  <header class="hero">
+    <div class="hero-content">
+      <p class="subtitle">Наша c тобой история</p>
+      <h1 class="couple-names">Чтобы помнить все моменты</h1>
+      <p class="start-date-label">Вместе с 11 ноября 2024</p>
+
+      <div class="timer" id="relationship-timer">
+        <div class="timer-card">
+          <span class="timer-num" id="years">0</span>
+          <span class="timer-label">года</span>
+        </div>
+        <div class="timer-card">
+          <span class="timer-num" id="months">0</span>
+          <span class="timer-label">мес</span>
+        </div>
+        <div class="timer-card">
+          <span class="timer-num" id="days">0</span>
+          <span class="timer-label">дней</span>
+        </div>
+        <div class="timer-card">
+          <span class="timer-num" id="hours">00</span>
+          <span class="timer-label">часов</span>
+        </div>
+        <div class="timer-card">
+          <span class="timer-num" id="minutes">00</span>
+          <span class="timer-label">минут</span>
+        </div>
+        <div class="timer-card">
+          <span class="timer-num" id="seconds">00</span>
+          <span class="timer-label">секунд</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Секция Карты -->
+  <section class="section" id="map-section">
+    <div class="section-header">
+      <h2>Карта наших мест</h2>
+      <p>Кликните по любой точке на карте, чтобы добавить новое воспоминание</p>
+    </div>
+    <div class="map-wrapper">
+      <div id="map"></div>
+    </div>
+  </section>
+
+  <!-- Секция Галереи -->
+  <section class="section" id="gallery-section">
+    <div class="section-header">
+      <h2>Моменты счастья</h2>
+    </div>
+    <div class="gallery-grid" id="gallery-grid">
+      <!-- Наполняется динамически через main.js -->
+    </div>
+  </section>
+
+  <!-- Подвал -->
+  <footer class="footer">
+    <p>© Буся <span id="current-year"></span></p>
+  </footer>
+
+  <!-- Модальное окно: Добавление / Редактирование точки -->
+  <div class="modal-backdrop" id="modal-marker">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modal-marker-title">Новое воспоминание</h3>
+        <button type="button" class="btn-close" id="btn-close-modal"><i data-lucide="x"></i></button>
+      </div>
+      <form id="form-marker" enctype="multipart/form-data">
+        <input type="hidden" name="marker_id" id="field-id">
+        <input type="hidden" name="lat" id="field-lat">
+        <input type="hidden" name="lng" id="field-lng">
+
+        <div class="form-group">
+          <label for="field-title">Название места / момента *</label>
+          <input type="text" id="field-title" name="title" placeholder="Например: Наш первый совместный кофе" required>
+        </div>
+
+        <div class="form-group">
+          <label for="field-date">Когда это было?</label>
+          <input type="date" id="field-date" name="event_date">
+        </div>
+
+        <div class="form-group">
+          <label for="field-desc">Ваша история / мысль</label>
+          <textarea id="field-desc" name="description" rows="3" placeholder="Что сделало это место таким особенным?"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="field-image" id="label-image">Фотография момента</label>
+          <input type="file" id="field-image" name="image" accept="image/png, image/jpeg, image/webp">
+        </div>
+
+        <div class="form-group">
+          <label for="field-codeword">Кодовое слово для сохранения *</label>
+          <input type="password" id="field-codeword" name="codeword" placeholder="Введите секретное слово..." required>
+        </div>
+
+        <div class="form-error" id="form-marker-error"></div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="btn-cancel-modal">Отмена</button>
+          <button type="submit" class="btn btn-primary" id="btn-submit-marker">Сохранить</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Модальное окно: Подтверждение удаления -->
+  <div class="modal-backdrop" id="modal-delete">
+    <div class="modal-card modal-card-sm">
+      <div class="modal-header">
+        <h3>Удалить воспоминание?</h3>
+        <button type="button" class="btn-close" id="btn-close-delete"><i data-lucide="x"></i></button>
+      </div>
+      <form id="form-delete">
+        <input type="hidden" id="delete-marker-id">
+        <p class="delete-warning">Это действие нельзя отменить. Для подтверждения введите кодовое слово:</p>
+        <div class="form-group">
+          <input type="password" id="delete-codeword" placeholder="Кодовое слово..." required>
+        </div>
+        <div class="form-error" id="form-delete-error"></div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="btn-cancel-delete">Отмена</button>
+          <button type="submit" class="btn btn-danger" id="btn-confirm-delete">Удалить</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Лайтбокс для просмотра фото -->
+  <div class="lightbox" id="lightbox">
+    <span class="lightbox-close" id="lightbox-close">&times;</span>
+    <img src="" alt="Enlarged memory" id="lightbox-img">
+    <div class="lightbox-caption" id="lightbox-caption"></div>
+  </div>
+
+  <!-- Основной JS -->
+  <script src="/static/js/main.js"></script>
+</body>
+</html>
