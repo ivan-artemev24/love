@@ -101,7 +101,7 @@ def index():
 
 @app.route('/api/markers', methods=['GET'])
 def get_markers():
-    memories = Memory.query.order_by(Memory.event_date.desk(), Memory.id.desk()).all()
+    memories = Memory.query.order_by(Memory.event_date.desc(), Memory.id.desc()).all()
     return jsonify([m.to_dict() for m in memories])
 
 
