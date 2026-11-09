@@ -37,6 +37,15 @@ document.addEventListener('DOMContentLoaded', () => {
 /* ==========================================================================
    1. ТАЙМЕР ОТНОШЕНИЙ
    ========================================================================== */
+function pluralize(number, forms) {
+  const n = Math.abs(number) % 100;
+  const n1 = n % 10;
+  if (n > 10 && n < 20) return forms[2];
+  if (n1 > 1 && n1 < 5) return forms[1];
+  if (n1 === 1) return forms[0];
+  return forms[2];
+}
+
 function initRelationshipTimer() {
   const elYears = document.getElementById('years');
   const elMonths = document.getElementById('months');
@@ -64,12 +73,21 @@ function initRelationshipTimer() {
     }
     if (months < 0) { months += 12; years--; }
 
+    // Обновляем цифры
     elYears.textContent = years;
     elMonths.textContent = months;
     elDays.textContent = days;
     elHours.textContent = String(hours).padStart(2, '0');
     elMinutes.textContent = String(minutes).padStart(2, '0');
     elSeconds.textContent = String(seconds).padStart(2, '0');
+
+    // Обновляем подписи с правильным склонением
+    elYears.nextElementSibling.textContent = pluralize(years, ['год', 'года', 'лет']);
+    elMonths.nextElementSibling.textContent = pluralize(months, ['месяц', 'месяца', 'месяцев']);
+    elDays.nextElementSibling.textContent = pluralize(days, ['день', 'дня', 'дней']);
+    elHours.nextElementSibling.textContent = pluralize(hours, ['час', 'часа', 'часов']);
+    elMinutes.nextElementSibling.textContent = pluralize(minutes, ['минута', 'минуты', 'минут']);
+    elSeconds.nextElementSibling.textContent = pluralize(seconds, ['секунда', 'секунды', 'секунд']);
   }
 
   update();
